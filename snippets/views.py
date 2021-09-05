@@ -2,9 +2,12 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.http import HttpResponse
+from snippets.models import Snippet
 
 def top(request):
-    return render(request, "snippets/top.html")
+    snippets = Snippet.objects.all() #Snippet一覧を取得
+    context = {"snippets":snippets}
+    return render(request, "snippets/top.html", context)
 
 
 def snippet_new(request):
