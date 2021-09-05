@@ -11,7 +11,7 @@ from snippets.views import top
 UserModel = get_user_model()
 
 
-class TopPageRenderSnippetsTest(TestCase):
+class SnippetDetailtest(TestCase):
     def setUp(self):
         self.user = UserModel.objects.create(
             username="test_user",
@@ -19,22 +19,15 @@ class TopPageRenderSnippetsTest(TestCase):
             password="top_secret_pass0001",
         )
         self.snippet = Snippet.objects.create(
-            title="title1",
-            code="printf('hello')",
-            description="description1",
+            title="タイトル",
+            code="コード",
+            description="解説",
         )
-
-
-    def test_should_return_snippet_title(self):
-        request = RequestFactory().get('/')
-        request.user = self.user
-        response = top(request)
-        self.assertContains(response, self.snippet.title)
-
-"""
-    def test_should_return_username(self):
-        request = RequestFactory().get('/')
-        request.user = self.user
-        response = top(request)
-        self.assertContains(response, self.user.Username)
-"""
+    
+    def test_should_use_expected_template(self):
+        reponse = self.client.get('/snippet/%s/' % self.snippet.id)
+        self.assertTemplateUsed(reponse, "snippets/snippet_detail.html")
+        
+    def test_top_page_returns_200_and_expected_heading(self):
+        reponse = self.client.get('/snippet/%s/' % self.snippet.id)
+        self.assertContains(response, self.snippet.title, status_code=200)
