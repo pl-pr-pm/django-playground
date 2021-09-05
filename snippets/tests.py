@@ -11,23 +11,24 @@ from snippets.views import top
 UserModel = get_user_model()
 
 
-class SnippetDetailtest(TestCase):
+class CreateSnippetTest(TestCase):
     def setUp(self):
         self.user = UserModel.objects.create(
             username="test_user",
             email="test@example.com",
             password="top_secret_pass0001",
         )
-        self.snippet = Snippet.objects.create(
-            title="タイトル",
-            code="コード",
-            description="解説",
-        )
+        self.client.force_login(self.user) # ログイン
     
-    def test_should_use_expected_template(self):
-        reponse = self.client.get('/snippet/%s/' % self.snippet.id)
-        self.assertTemplateUsed(reponse, "snippets/snippet_detail.html")
-        
-    def test_top_page_returns_200_and_expected_heading(self):
-        reponse = self.client.get('/snippet/%s/' % self.snippet.id)
-        self.assertContains(response, self.snippet.title, status_code=200)
+    
+    def test_render_creation_form(self):
+        response = self.client.get('/snippet/new/')
+        self.assertContains(respose,  "スニペットの登録", status_code=200)
+    
+    
+    def test_create_snippet(self):
+        data = {'title': 'タイトル','code':'コード', 'description':'解説'}
+        self.client.post('/snippets/new/', data)
+        snippet = Snippet.objects.get(title='タイトル')
+        self.assertEqual('コード', snippet.code)
+        self.assertEqual('解説', snippet.description)
