@@ -22,4 +22,5 @@ urlpatterns = [
     path('', top, name='top'),
     path('admin/', admin.site.urls),
     path('snippets/', include('snippets.urls')), # Load snippets/urls.py
+    path('accounts/', include('accounts.urls')), # Load accounts/urls.py
 ]
